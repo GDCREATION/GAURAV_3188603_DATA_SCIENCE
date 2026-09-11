@@ -67,7 +67,7 @@ ROOT = Path.cwd().parent if Path.cwd().name == "notebook" else Path.cwd()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.config import RANDOM_STATE, TEST_SIZE, TARGET_COL, ID_COL, NUMERIC_COLS, CATEGORICAL_COLS
+from src.config import RANDOM_STATE, TEST_SIZE, TARGET_COL, ID_COL, FEATURE_COLS, NUMERIC_COLS, CATEGORICAL_COLS
 from src.data_loader import load_raw_data, clean_data, split_features_target, encode_target, load_and_clean
 from src.preprocessing import build_preprocessor
 
@@ -94,7 +94,8 @@ df = clean_data(raw)
 print("Shape after clean:", df.shape)
 print("TotalCharges dtype:", df["TotalCharges"].dtype)
 print("TotalCharges NaNs:", df["TotalCharges"].isna().sum())
-print("\\nNumeric cols:", NUMERIC_COLS)
+print("\\nFeature cols (CSV order):", FEATURE_COLS)
+print("Numeric cols:", NUMERIC_COLS)
 print("Categorical cols:", CATEGORICAL_COLS)"""
     ),
     code(

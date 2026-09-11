@@ -6,7 +6,20 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.config import DATA_PATH, ID_COL, TARGET_COL
+from src.config import ALL_COLUMNS, DATA_PATH, FEATURE_COLS, ID_COL, TARGET_COL
+
+
+def validate_columns(df: pd.DataFrame) -> None:
+    """Ensure the frame matches the Telco data dictionary column names and order."""
+    actual = list(df.columns)
+    if actual != ALL_COLUMNS:
+        missing = [c for c in ALL_COLUMNS if c not in actual]
+        extra = [c for c in actual if c not in ALL_COLUMNS]
+        raise ValueError(
+            "CSV columns do not match docs/TelcoCustomerChurn-Data-Dictionary.csv. "
+            f"Missing: {missing or 'none'}. Unexpected: {extra or 'none'}. "
+            f"Expected order: {ALL_COLUMNS}"
+        )
 
 
 def load_raw_data(path: Path | None = None) -> pd.DataFrame:
@@ -16,6 +29,8 @@ def load_raw_data(path: Path | None = None) -> pd.DataFrame:
     ------
     FileNotFoundError
         If the CSV is missing — download it into ``data/`` first.
+    ValueError
+        If column names or order do not match the data dictionary.
     """
     csv_path = Path(path) if path is not None else DATA_PATH
     if not csv_path.exists():
@@ -23,7 +38,9 @@ def load_raw_data(path: Path | None = None) -> pd.DataFrame:
             f"Dataset not found at {csv_path}. "
             "Download TelcoCustomerChurn.csv into the data/ folder."
         )
-    return pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path)
+    validate_columns(df)
+    return df
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -67,7 +84,7 @@ def split_features_target(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     drop_cols = [TARGET_COL]
     if ID_COL in df.columns:
         drop_cols.append(ID_COL)
-    X = df.drop(columns=drop_cols)
+    X = df.drop(columns=drop_cols)[FEATURE_COLS]
     return X, y
 
 

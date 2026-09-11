@@ -18,6 +18,8 @@ MODEL_PATH = MODEL_DIR / "churn_pipeline.pkl"
 NOTEBOOK_DIR = PROJECT_ROOT / "notebook"
 DOCS_DIR = PROJECT_ROOT / "docs"
 FIGURES_DIR = DOCS_DIR / "figures"
+DATA_DICT_FILENAME = "TelcoCustomerChurn-Data-Dictionary.csv"
+DATA_DICT_PATH = DOCS_DIR / DATA_DICT_FILENAME
 
 # Train/test split (assignment requirements)
 RANDOM_STATE = 42
@@ -27,15 +29,14 @@ TEST_SIZE = 0.30
 TARGET_COL = "Churn"
 ID_COL = "customerID"
 
-# Numeric columns in the raw Telco dataset (after TotalCharges cleaning)
-NUMERIC_COLS = ["tenure", "MonthlyCharges", "TotalCharges"]
-
-# Categorical feature columns (excluding ID and target)
-CATEGORICAL_COLS = [
+# All CSV columns in file order (must match docs/TelcoCustomerChurn-Data-Dictionary.csv)
+ALL_COLUMNS = [
+    "customerID",
     "gender",
     "SeniorCitizen",
     "Partner",
     "Dependents",
+    "tenure",
     "PhoneService",
     "MultipleLines",
     "InternetService",
@@ -48,6 +49,20 @@ CATEGORICAL_COLS = [
     "Contract",
     "PaperlessBilling",
     "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges",
+    "Churn",
+]
+
+# Modeling features: ALL_COLUMNS minus ID and target (same order as the CSV)
+FEATURE_COLS = [c for c in ALL_COLUMNS if c not in (ID_COL, TARGET_COL)]
+
+# Numeric columns in the raw Telco dataset (after TotalCharges cleaning)
+NUMERIC_COLS = ["tenure", "MonthlyCharges", "TotalCharges"]
+
+# Categorical feature columns (excluding ID and target; CSV order among categoricals)
+CATEGORICAL_COLS = [
+    c for c in FEATURE_COLS if c not in NUMERIC_COLS
 ]
 
 # Service columns used for engineered feature HasMultipleServices

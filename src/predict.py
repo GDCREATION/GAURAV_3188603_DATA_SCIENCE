@@ -8,9 +8,7 @@ from typing import Any
 import joblib
 import pandas as pd
 
-from src.config import CATEGORICAL_COLS, MODEL_PATH, NUMERIC_COLS
-
-_FEATURE_ORDER = list(NUMERIC_COLS) + list(CATEGORICAL_COLS)
+from src.config import FEATURE_COLS, MODEL_PATH
 
 _pipeline = None
 
@@ -37,10 +35,10 @@ def get_pipeline():
 
 def customer_to_dataframe(customer: dict[str, Any]) -> pd.DataFrame:
     """Convert a single customer dict to a one-row DataFrame."""
-    row = {col: customer.get(col) for col in _FEATURE_ORDER}
+    row = {col: customer.get(col) for col in FEATURE_COLS}
     # Allow optional engineered columns if caller already computed them —
     # FeatureEngineer will recompute from raw fields.
-    return pd.DataFrame([row])
+    return pd.DataFrame([row], columns=FEATURE_COLS)
 
 
 def predict_churn(

@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.config import MODEL_DIR, MODEL_PATH, RANDOM_STATE, TEST_SIZE  # noqa: E402
+from src.config import FEATURE_COLS, MODEL_DIR, MODEL_PATH, RANDOM_STATE, TEST_SIZE  # noqa: E402
 from src.data_loader import encode_target, load_and_clean, split_features_target  # noqa: E402
 from src.predict import predict_churn  # noqa: E402
 from src.train import train_and_compare  # noqa: E402
@@ -57,7 +57,8 @@ def main() -> None:
             clean[k] = v.item()
         else:
             clean[k] = v
-    sample_path.write_text(json.dumps(clean, indent=2))
+    ordered = {k: clean[k] for k in FEATURE_COLS if k in clean}
+    sample_path.write_text(json.dumps(ordered, indent=2))
     print("Wrote", sample_path)
     print("sample_request prediction:", predict_churn(clean, pipeline=best))
 

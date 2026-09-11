@@ -11,28 +11,39 @@ from pydantic import BaseModel, ConfigDict, Field
 from src.predict import load_model, predict_churn
 
 
+YesNo = Literal["Yes", "No"]
+YesNoNoInternet = Literal["Yes", "No", "No internet service"]
+YesNoNoPhone = Literal["Yes", "No", "No phone service"]
+PaymentMethodValue = Literal[
+    "Electronic check",
+    "Mailed check",
+    "Bank transfer (automatic)",
+    "Credit card (automatic)",
+]
+
+
 class CustomerInput(BaseModel):
     """Raw customer features matching the Telco CSV (without customerID / Churn)."""
 
     model_config = ConfigDict(extra="ignore")
 
     gender: Literal["Male", "Female"]
-    SeniorCitizen: int | str = Field(..., description="0/1 or '0'/'1'")
-    Partner: Literal["Yes", "No"]
-    Dependents: Literal["Yes", "No"]
+    SeniorCitizen: Literal["0", "1"] | int = Field(..., description="0/1 or '0'/'1'")
+    Partner: YesNo
+    Dependents: YesNo
     tenure: int = Field(..., ge=0)
-    PhoneService: Literal["Yes", "No"]
-    MultipleLines: str
+    PhoneService: YesNo
+    MultipleLines: YesNoNoPhone
     InternetService: Literal["DSL", "Fiber optic", "No"]
-    OnlineSecurity: str
-    OnlineBackup: str
-    DeviceProtection: str
-    TechSupport: str
-    StreamingTV: str
-    StreamingMovies: str
+    OnlineSecurity: YesNoNoInternet
+    OnlineBackup: YesNoNoInternet
+    DeviceProtection: YesNoNoInternet
+    TechSupport: YesNoNoInternet
+    StreamingTV: YesNoNoInternet
+    StreamingMovies: YesNoNoInternet
     Contract: Literal["Month-to-month", "One year", "Two year"]
-    PaperlessBilling: Literal["Yes", "No"]
-    PaymentMethod: str
+    PaperlessBilling: YesNo
+    PaymentMethod: PaymentMethodValue
     MonthlyCharges: float = Field(..., ge=0)
     TotalCharges: float = Field(..., ge=0)
 
