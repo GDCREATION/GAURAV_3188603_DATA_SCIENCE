@@ -1,5 +1,7 @@
 # Customer Churn Prediction (Telco)
 
+Recording Link : https://drive.google.com/drive/folders/19z9ydveS75TSH21tDuYROCzIL1fU_dl8?usp=share_link
+
 End-to-end machine learning project that predicts whether a telecom customer will churn, using the IBM Telco Customer Churn dataset. The solution includes exploratory analysis, feature engineering, Decision Tree models, evaluation, model interpretation, a saved sklearn pipeline, and a FastAPI prediction service.
 
 ## Project structure
